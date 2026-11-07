@@ -67,6 +67,9 @@ p{margin:0}
 /* hero */
 .hero{position:relative;height:100vh;min-height:640px;overflow:hidden;background:radial-gradient(ellipse at 50% 40%,#0A2338 0%,var(--ink) 70%)}
 .hero canvas{position:absolute;inset:0;width:100%;height:100%}
+.hbg{position:absolute;inset:-6%;background:url(img/hero-fondo.webp) center/cover no-repeat;opacity:.7;will-change:transform;animation:breathe 22s ease-in-out infinite alternate}
+.hbg::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 45%,rgba(3,13,25,.55) 0%,rgba(3,13,25,.15) 55%,rgba(3,13,25,.85) 100%)}
+@keyframes breathe{from{transform:scale(1) rotate(0deg)}to{transform:scale(1.08) rotate(1.2deg)}}
 .hero .copy{position:absolute;left:0;right:0;top:61%;text-align:center;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
 .hero h1{font-size:clamp(30px,4.4vw,62px);font-weight:800;line-height:1;letter-spacing:-.045em}
 .hero h1 em{color:var(--teal-2)}
@@ -80,6 +83,8 @@ p{margin:0}
 @media (max-height:720px),(max-width:600px){.hint{display:none}}
 /* caos → orden */
 .chaos{position:relative;height:100vh;min-height:700px;overflow:hidden;background:var(--ink)}
+.chaos .obg{position:absolute;inset:0;background:url(img/caos-orden.webp) center 85%/cover no-repeat;opacity:.22}
+.chaos .obg::after{content:"";position:absolute;inset:0;background:linear-gradient(var(--ink) 8%,rgba(3,13,25,.35) 55%,var(--ink) 100%)}
 .chaos .head{position:absolute;left:0;right:0;top:12vh;text-align:center}
 .chaos .head .h2{font-size:clamp(38px,5.6vw,84px)}
 .tool{position:absolute;left:50%;top:58%;width:240px;margin:-52px 0 0 -120px;padding:18px 20px;border-radius:16px;background:#0D2338;border:1px dashed rgba(255,255,255,.25);color:var(--muted);font-size:14.5px;box-shadow:0 20px 40px rgba(0,0,0,.35)}
@@ -90,6 +95,16 @@ p{margin:0}
 .one ul{list-style:none;padding:0;margin:18px 0 0;display:grid;gap:11px;font-size:17px}
 .one li{display:flex;gap:12px}
 .one li::before{content:"";flex:none;width:8px;height:8px;border-radius:50%;background:var(--teal-2);box-shadow:0 0 12px var(--teal-2);margin-top:9px}
+/* escaparate portátil */
+.show{position:relative;min-height:100vh;overflow:hidden;background:radial-gradient(ellipse at 50% 70%,#0A2338 0%,var(--ink) 65%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:110px 20px 40px;text-align:center}
+.show .h2{font-size:clamp(36px,5vw,74px)}
+.show .lead{max-width:60ch;margin:16px auto 0;color:var(--muted)}
+.show .lap{position:relative;width:min(1180px,96vw);margin-top:-2vh;will-change:transform}
+.show .lap img{width:100%;height:auto;display:block;-webkit-mask-image:radial-gradient(ellipse 72% 78% at 50% 50%,#000 60%,transparent 100%);mask-image:radial-gradient(ellipse 72% 78% at 50% 50%,#000 60%,transparent 100%)}
+.show .tag{position:absolute;padding:10px 14px;border-radius:12px;background:rgba(10,33,54,.85);border:1px solid rgba(94,234,212,.45);backdrop-filter:blur(8px);font-size:14px;color:#fff;text-align:left;box-shadow:0 14px 40px rgba(0,0,0,.4);white-space:nowrap}
+.show .tag small{display:block;color:var(--muted);font-size:12px}
+.show .tag i{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--c,var(--teal-2));box-shadow:0 0 10px var(--c,var(--teal-2));margin-right:8px}
+@media (max-width:700px){.show .tag{display:none}}
 /* módulos horizontal */
 .mods{position:relative;background:var(--deep);overflow:hidden}
 .mods .intro{padding-block:120px 40px}
@@ -305,6 +320,7 @@ footer b{color:#fff}
 <div class="prog" id="prog"></div>
 </nav>
 <header class="hero" id="inicio">
+<div class="hbg" id="hbg" aria-hidden="true"></div>
 <canvas id="fx" aria-hidden="true"></canvas>
 <div class="copy" id="herocopy">
 <h1 class="split">Toda tu formación. Una sola <em>plataforma.</em></h1>
@@ -317,6 +333,7 @@ footer b{color:#fff}
 <div class="hint" aria-hidden="true">Desliza<i></i></div>
 </header>
 <section class="chaos" id="plataforma">
+<div class="obg" id="obg" aria-hidden="true"></div>
 <div class="head wrap">
 <span class="kicker">El punto de partida</span>
 <h2 class="h2">Seis herramientas que no se hablan.<br><em style="color:var(--teal-2)">Una que lo ordena todo.</em></h2>
@@ -335,6 +352,17 @@ footer b{color:#fff}
 <li>Cada pantalla te dice cuál es el siguiente paso.</li>
 <li>Cada cifra del cuadro de mando sale del mismo dato.</li>
 </ul>
+</div>
+</section>
+<section class="show" id="escaparate">
+<span class="kicker">Tu lunes, en una pantalla</span>
+<h2 class="h2">Abres y ya sabes<br><em style="color:var(--teal-2)">qué toca hoy.</em></h2>
+<p class="lead">La pantalla de inicio reúne los WhatsApp por contestar, los documentos que han llegado, los plazos de la semana y los grupos con clase. Sin buscar en seis sitios.</p>
+<div class="lap" id="lap">
+<img src="img/portatil.webp" alt="Pantalla de inicio de Gestionnarte en un portátil" width="1920" height="1072" loading="lazy">
+<div class="tag" style="left:2%;top:30%;--c:#F9A8D4"><i></i>1 WhatsApp por contestar<small>Bandeja compartida</small></div>
+<div class="tag" style="right:4%;top:22%;--c:#C4B5FD"><i></i>Documentos clasificados<small>Por persona y fase</small></div>
+<div class="tag" style="right:1%;top:58%;--c:#5EEAD4"><i></i>3 matrículas por decidir<small>Ordenado por urgencia</small></div>
 </div>
 </section>
 <section class="mods" id="modulos">
@@ -876,6 +904,12 @@ ScrollTrigger.create({ trigger: hero, start: 'top top', end: 'bottom top', scrub
 onUpdate: s => { scatter = s.progress; }, onToggle: s => { heroVisible = s.isActive || scrollY < innerHeight; } });
 gsap.to('#herocopy, .hint', { yPercent: -40, opacity: 0, ease: 'none', scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom 30%', scrub: true } });
 $$('section .h2').forEach(h => gsap.from($$('.word > span', h), { yPercent: 110, duration: 1, ease: 'expo.out', stagger: .04, scrollTrigger: { trigger: h, start: 'top 88%' } }));
+if (fine && !reduce) { const qx = gsap.quickTo('#hbg', 'x', { duration: 1.6, ease: 'power3' }), qy = gsap.quickTo('#hbg', 'y', { duration: 1.6, ease: 'power3' });
+hero.addEventListener('pointermove', e => { qx((e.clientX / innerWidth - .5) * -40); qy((e.clientY / innerHeight - .5) * -28); }); }
+gsap.to('#hbg', { yPercent: 18, opacity: .2, ease: 'none', scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: true } });
+gsap.fromTo('#lap', { y: 120, scale: .82, rotateX: 18, opacity: .3, transformPerspective: 1400 }, { y: 0, scale: 1, rotateX: 0, opacity: 1, ease: 'none', scrollTrigger: { trigger: '#escaparate', start: 'top bottom', end: 'center center', scrub: 1 } });
+$$('#lap .tag').forEach((t, i) => gsap.from(t, { y: 30, opacity: 0, scale: .9, duration: .8, ease: 'back.out(1.6)', delay: i * .15, scrollTrigger: { trigger: '#lap', start: 'top 45%' } }));
+gsap.to('#lap', { yPercent: -6, ease: 'none', scrollTrigger: { trigger: '#escaparate', start: 'center center', end: 'bottom top', scrub: true } });
 const mm = gsap.matchMedia();
 mm.add('(min-width: 901px)', () => {
 const tools = $$('.tool');
@@ -885,7 +919,8 @@ const tl = gsap.timeline({ scrollTrigger: { trigger: '#plataforma', start: 'top 
 tl.from(tools, { y: (i, t) => +t.dataset.y + 400, opacity: 0, rotate: i => (i % 2 ? 30 : -30), stagger: .05, duration: .5 })
 .to(tools, { x: 0, y: 0, rotate: 0, scale: .6, opacity: 0, duration: .6, ease: 'power2.in', stagger: .03 }, '+=.25')
 .to('#one', { scale: 1, opacity: 1, filter: 'blur(0px)', duration: .5, ease: 'back.out(1.4)' }, '-=.2')
-.from('#one li', { x: -20, opacity: 0, stagger: .08, duration: .3 });
+.from('#one li', { x: -20, opacity: 0, stagger: .08, duration: .3 })
+.fromTo('#obg', { opacity: .12, scale: 1.08 }, { opacity: .5, scale: 1, duration: 1, ease: 'none' }, 0);
 const panels = $$('.panel'), segs = $$('#mbar i b');
 const dist = () => track.scrollWidth - innerWidth;
 const h = gsap.to(track, { x: () => -dist(), ease: 'none', scrollTrigger: { trigger: '#hwrap', start: 'top top', end: () => '+=' + dist(), scrub: 1, pin: true, invalidateOnRefresh: true,

@@ -784,69 +784,76 @@ await wait(4200);
 const hero = $('.hero');
 const WM = { cv: $('#wmc'), off: document.createElement('canvas'), vid: $('#hvid'), L: [], intro: 0, scroll: 0, mx: -9999, my: -9999, t0: performance.now(), on: true };
 WM.cx = WM.cv.getContext('2d'); WM.oc = WM.off.getContext('2d');
+const AREA = ['#F9A8D4', '#5EEAD4', '#93C5FD', '#C4B5FD', '#FDBA74', '#D6D3D1'];
+const hex = h => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
 function wmBuild() {
 const c = WM.cv, dpr = Math.min(devicePixelRatio || 1, 2), W = c.clientWidth, H = c.clientHeight;
 c.width = W * dpr; c.height = H * dpr; WM.dpr = dpr; WM.W = W; WM.H = H;
 const off = WM.off, o = WM.oc, word = 'gestionnarte';
-let fs = 200; o.font = `900 ${fs}px "Inter Tight", sans-serif`;
+let fs = 200; o.font = `800 ${fs}px "Inter Tight", sans-serif`;
 const ls = -.045, raw = [...word].map(ch => o.measureText(ch).width);
 const tot = raw.reduce((x, y) => x + y, 0) + ls * fs * (word.length - 1);
-fs = fs * Math.min(W * .9, 1240) / tot; const sc = fs / 200;
+fs = fs * Math.min(W * .88, 1180) / tot; const sc = fs / 200;
 off.width = Math.ceil(W); off.height = Math.ceil(fs * 1.3);
-o.font = `900 ${fs}px "Inter Tight", sans-serif`; o.textBaseline = 'alphabetic'; o.fillStyle = '#fff';
+o.clearRect(0, 0, off.width, off.height);
+o.font = `800 ${fs}px "Inter Tight", sans-serif`; o.textBaseline = 'alphabetic'; o.fillStyle = '#fff';
 let x = (W - tot * sc) / 2, n0 = 0, n1 = 0; const bl = fs * 1.02;
-[...word].forEach((ch, i) => { if (i === 7) n0 = x; o.fillText(ch, x, bl); x += raw[i] * sc + ls * fs; if (i === 7) n1 = x; });
-const top = H * (W < 700 ? .2 : .2) - fs * .1, gap = W < 600 ? 4 : W < 1100 ? 5 : 6;
-const d = o.getImageData(0, 0, off.width, off.height).data, P = [];
-for (let yy = 0; yy < off.height; yy += gap) for (let xx = (yy / gap) % 2 ? gap / 2 : 0; xx < off.width; xx += gap) {
-const xi = xx | 0; if (d[(yy * off.width + xi) * 4 + 3] > 120) P.push({ x: xi, y: top + yy, n: xi >= n0 && xi < n1, r: Math.random(), v: .4 + Math.random() * .9, gy: yy / off.height });
+[...word].forEach((ch, i) => { if (i === 7) n0 = x; o.fillText(ch, x, bl); x += raw[i] * sc + ls * fs; if (i === 7) n1 = x - ls * fs; });
+const top = H * (W < 700 ? .24 : .3) - bl * .62, gap = W < 600 ? 3 : W < 1100 ? 3.5 : 4;
+const d = o.getImageData(0, 0, off.width, off.height).data, old = WM.P || [], P = [];
+for (let yy = 0; yy < off.height; yy += gap) for (let xx = 0; xx < off.width; xx += gap) {
+const xi = xx | 0, yi = yy | 0; if (d[(yi * off.width + xi) * 4 + 3] < 140) continue;
+const i = P.length, q = old[i], a = Math.random() * 6.283, r = Math.max(W, H) * (.22 + Math.random() * .5);
+P.push({ tx: xi, ty: top + yi, n: xi >= n0 && xi < n1, cx: W / 2 + Math.cos(a) * r, cy: H * .32 + Math.sin(a) * r * .55,
+x: q ? q.x : W / 2 + (Math.random() - .5) * W * 1.3, y: q ? q.y : H / 2 + (Math.random() - .5) * H * 1.3, vx: 0, vy: 0,
+d: Math.random() * .35 + (xi / off.width) * .45, c0: hex(AREA[i % AREA.length]), ph: Math.random() * 6.283, ex: Math.random() - .5, ey: Math.random() - .5 });
 }
-WM.P = P; WM.gap = gap; WM.fs = fs; WM.top = top; WM.bot = top + bl;
-const G = [], gg = W < 700 ? 22 : 30; for (let yy = gg / 2; yy < H; yy += gg) for (let xx = gg / 2; xx < W; xx += gg) G.push({ x: xx, y: yy });
-WM.G = G; WM.L = P;
-document.querySelector('.hero').style.setProperty('--lt', (top + bl + fs * .14) + 'px');
+// nube de puntos alrededor de la palabra
+const C = [], nc = W < 700 ? 220 : 520, wcx = W / 2, wcy = top + bl * .62, rw = (x - (W - tot * sc) / 2) * .62, rh = bl * 1.15;
+for (let i = 0; i < nc; i++) C.push({ a: Math.random() * 6.283, rr: .55 + Math.random() * .75, s: (.08 + Math.random() * .3) * (Math.random() < .5 ? -1 : 1), sz: Math.random() * 2 + .7, ph: Math.random() * 6.283, teal: Math.random() < .4, ox: 0, oy: 0 });
+WM.P = P; WM.C = C; WM.gap = gap; WM.fs = fs; WM.wc = { x: wcx, y: wcy, rw, rh };
+document.querySelector('.hero').style.setProperty('--lt', (top + bl + fs * .3) + 'px');
 }
-WM.rings = []; WM.glitch = { t: 0, y0: 0, y1: 0, dx: 0 };
+WM.rings = [];
+const ez = t => t < 0 ? 0 : t > 1 ? 1 : 1 - Math.pow(1 - t, 3);
 function wmDraw(now) {
 requestAnimationFrame(wmDraw);
 if (!WM.on || !WM.P) return;
-const { cx, dpr, W, H, gap, P, G } = WM, t = (now - WM.t0) / 1000, mx = WM.mx, my = WM.my, sc = WM.scroll;
+const { cx, dpr, W, H, gap, P, C, wc } = WM, t = (now - WM.t0) / 1000, mx = WM.mx, my = WM.my, sc = WM.scroll;
 cx.setTransform(dpr, 0, 0, dpr, 0, 0); cx.clearRect(0, 0, W, H);
-const R = Math.max(120, WM.fs * .75);
-// rejilla de fondo: puntos tenues que se encienden cerca del cursor
-for (const q of G) { const dd = Math.hypot(q.x - mx, q.y - my); if (dd > 220) continue; const k = 1 - dd / 220; cx.fillStyle = `rgba(94,234,212,${k * .55})`; cx.fillRect(q.x - 1, q.y - 1, 2 + k * 1.5, 2 + k * 1.5); }
-// fallo digital ocasional
-const gl = WM.glitch; if (t > gl.t + 3.8 + Math.random() * 3 && WM.intro > 1.2 && sc < .05) { gl.t = t; gl.y0 = WM.top + Math.random() * (WM.bot - WM.top) * .8; gl.y1 = gl.y0 + 8 + Math.random() * WM.fs * .18; gl.dx = (Math.random() - .5) * WM.fs * .16; }
-const gOn = t - gl.t < .14;
-const scan = WM.intro / 2.2 * (W + 240) - 120;
-WM.rings = WM.rings.filter(r => t - r.t < 1.6);
+WM.rings = WM.rings.filter(r => t - r.t < 1.4);
+// nube
+for (const q of C) {
+const a = q.a + t * q.s * .35;
+let x = wc.x + Math.cos(a) * wc.rw * q.rr, y = wc.y + Math.sin(a * 1.3 + q.ph) * wc.rh * q.rr;
+y -= sc * (200 + q.rr * 300);
+const dx = x - mx, dy = y - my, dd = Math.hypot(dx, dy); let k = 0;
+if (dd < 160) { k = 1 - dd / 160; x += dx / (dd || 1) * k * 46; y += dy / (dd || 1) * k * 46; }
+const al = (.3 + .45 * Math.sin(t * 1.6 + q.ph) ** 2 + k * .6) * Math.min(1, WM.intro) * (1 - sc);
+if (al <= 0) continue;
+cx.fillStyle = q.teal || k > .25 ? `rgba(94,234,212,${al})` : `rgba(244,248,251,${al * .75})`;
+cx.beginPath(); cx.arc(x, y, q.sz * (1 + k * .8), 0, 6.283); cx.fill();
+}
+// palabra de puntos
+const R = 110, sz = gap * .82;
 for (const p of P) {
-const lag = p.r * 90; if (p.x > scan - lag) continue;
-const fresh = Math.max(0, 1 - (scan - lag - p.x) / 140);
-let x = p.x, y = p.y;
-// lente bajo el cursor
-const dx = x - mx, dy = y - my, dd = Math.hypot(dx, dy); let lens = 0;
-if (dd < R) { lens = 1 - dd / R; const f = lens * lens * .32; x += dx * f; y += dy * f; }
-// ondas al hacer clic
-let ring = 0; for (const r of WM.rings) { const rad = (t - r.t) * 700, dr = Math.hypot(p.x - r.x, p.y - r.y); const w = Math.max(0, 1 - Math.abs(dr - rad) / 40) * (1 - (t - r.t) / 1.6); if (w > 0) { ring = Math.max(ring, w); x += (p.x - r.x) / (dr || 1) * w * 14; y += (p.y - r.y) / (dr || 1) * w * 14; } }
-if (gOn && p.y > gl.y0 && p.y < gl.y1) x += gl.dx;
-// salida con el scroll
-if (sc > 0) { y -= sc * sc * (300 + p.v * 500); x += Math.sin(p.r * 40) * sc * 60; }
-const wave = .5 + .5 * Math.sin(t * 1.7 - p.x * .011 + p.y * .018);
-let rad = gap * (.3 + .2 * wave + lens * .34 + ring * .4) + (fresh ? fresh * gap * .5 * (p.r > .5 ? 1 : .3) : 0);
-const a = (1 - sc * 1.3) * (.72 + .28 * wave + lens * .3);
-if (a <= 0) continue;
-let col;
-if (fresh > .3 && p.r > .72) col = `rgba(249,168,212,${a})`;
-else if (p.n || lens > .55 || ring > .3) col = `rgba(${p.n ? 45 : 94},${p.n ? 212 : 234},${p.n ? 191 : 212},${Math.min(1, a + .2)})`;
-else { const m = p.gy; col = `rgba(${246 - m * 50 | 0},${250 - m * 14 | 0},${252 - m * 22 | 0},${a})`; }
-if (gOn && p.y > gl.y0 && p.y < gl.y1) col = p.r > .5 ? 'rgba(249,168,212,.9)' : 'rgba(94,234,212,.9)';
-cx.fillStyle = col; cx.beginPath(); cx.arc(x, y, Math.max(.4, rad), 0, 6.283); cx.fill();
+const k = ez((WM.intro - p.d) / .6), drift = (1 - k) * 16;
+let gx = p.cx + (p.tx - p.cx) * k + Math.sin(t * .7 + p.ph) * drift;
+let gy = p.cy + (p.ty - p.cy) * k + Math.cos(t * .6 + p.ph) * drift;
+gx += p.ex * sc * W * 1.1; gy += p.ey * sc * H * 1.1 - sc * 140;
+for (const r of WM.rings) { const rad = (t - r.t) * 650, dr = Math.hypot(p.tx - r.x, p.ty - r.y), w = Math.max(0, 1 - Math.abs(dr - rad) / 36) * (1 - (t - r.t) / 1.4); if (w > 0) { gx += (p.tx - r.x) / (dr || 1) * w * 16; gy += (p.ty - r.y) / (dr || 1) * w * 16; } }
+const dx = p.x - mx, dy = p.y - my, dist = dx * dx + dy * dy; let hot = 0;
+if (dist < R * R) { const dd = Math.sqrt(dist) || 1; hot = 1 - dd / R; const f = hot * 3; p.vx += dx / dd * f; p.vy += dy / dd * f; }
+p.vx += (gx - p.x) * .07; p.vy += (gy - p.y) * .07; p.vx *= .78; p.vy *= .78; p.x += p.vx; p.y += p.vy;
+const c1 = p.n ? [13, 170, 156] : hot > .2 ? [94, 234, 212] : [244, 248, 251], c0 = p.c0;
+const r = c0[0] + (c1[0] - c0[0]) * k, g = c0[1] + (c1[1] - c0[1]) * k, b = c0[2] + (c1[2] - c0[2]) * k;
+const al = (.5 + .5 * k) * (1 - sc * .9);
+cx.fillStyle = `rgba(${r | 0},${g | 0},${b | 0},${al})`;
+const s = sz * (1 + (1 - k) * .4);
+cx.fillRect(p.x - s / 2, p.y - s / 2, s, s);
 }
-// línea de escaneo durante la entrada
-if (WM.intro < 2.3) { const sg = cx.createLinearGradient(scan - 60, 0, scan + 4, 0); sg.addColorStop(0, 'rgba(94,234,212,0)'); sg.addColorStop(1, 'rgba(94,234,212,.5)'); cx.fillStyle = sg; cx.fillRect(scan - 60, WM.top - 20, 64, WM.bot - WM.top + 50); }
 }
-(document.fonts && document.fonts.load ? document.fonts.load('900 100px "Inter Tight"').then(() => document.fonts.ready) : Promise.resolve()).then(() => { wmBuild(); requestAnimationFrame(wmDraw); if (reduce || !hasG) WM.intro = 2.4; });
+(document.fonts && document.fonts.load ? document.fonts.load('800 100px "Inter Tight"').then(() => document.fonts.ready) : Promise.resolve()).then(() => { wmBuild(); requestAnimationFrame(wmDraw); if (reduce || !hasG) WM.intro = 2; });
 hero.addEventListener('pointermove', e => { const r = WM.cv.getBoundingClientRect(); WM.mx = e.clientX - r.left; WM.my = e.clientY - r.top; });
 hero.addEventListener('pointerleave', () => { WM.mx = WM.my = -9999; });
 hero.addEventListener('pointerdown', e => { const r = WM.cv.getBoundingClientRect(); WM.rings.push({ x: e.clientX - r.left, y: e.clientY - r.top, t: (performance.now() - WM.t0) / 1000 }); });
@@ -924,7 +931,7 @@ $$('.split, .split2, .h2').forEach(splitWords);
 gsap.from('.hero .word > span', { yPercent: 110, duration: 1.1, ease: 'expo.out', stagger: .05, delay: 1.6 });
 gsap.from('.hero p, .hero .ctas', { y: 24, opacity: 0, duration: 1, ease: 'power3.out', stagger: .12, delay: 2.1 });
 if (!reduce) {
-gsap.to(WM, { intro: 2.4, duration: 2.6, ease: 'power1.inOut', delay: .3 });
+gsap.to(WM, { intro: 2, duration: 3, ease: 'power2.inOut', delay: .2 });
 gsap.to('#wmline', { scaleX: 1, duration: 1.6, ease: 'expo.inOut', delay: .9 });
 ScrollTrigger.create({ trigger: hero, start: 'top top', end: 'bottom top', scrub: .6, onUpdate: st => { WM.scroll = st.progress; }, onToggle: st => { WM.on = st.isActive || scrollY < innerHeight; } });
 gsap.to('#wmline', { scaleX: 0, opacity: 0, ease: 'none', scrollTrigger: { trigger: hero, start: 'top top', end: '40% top', scrub: true } });

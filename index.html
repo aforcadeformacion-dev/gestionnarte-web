@@ -552,6 +552,7 @@ footer b{color:#fff}
 <select id="f-tipo" name="tipo"><option>Centro de formación profesional</option><option>Entidad del tercer sector</option><option>Academia privada</option><option>Otro</option></select>
 </label>
 <label class="full consent" for="f-ok"><span><input id="f-ok" name="consentimiento" type="checkbox" required> Acepto que Talento Global use estos datos solo para contactarme sobre la demostración de Gestionnarte. Puedo pedir que se borren escribiendo a soporte@gestionnarte.com.</span></label>
+<input type="text" name="web" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
 <div class="send"><button class="btn btn-p mag" type="submit">Solicitar demo</button><span class="msgok" id="formmsg" role="status"></span></div>
 </form>
 </div>
@@ -838,19 +839,18 @@ let k = -1; secs.forEach((s, i) => { if (s && s.getBoundingClientRect().top < 16
 }
 addEventListener('scroll', onScroll, { passive: true }); onScroll();
 /* ---------- formulario ---------- */
-const DEMO_ENDPOINT = 'https://formsubmit.co/ajax/soporte@gestionnarte.com';
+const DEMO_ENDPOINT = '/api/demo';
 $('#form').addEventListener('submit', async e => {
 e.preventDefault();
 const f = e.target, msg = $('#formmsg'), btn = $('button[type="submit"]', f);
 if (!f.nombre.value.trim() || !f.centro.value.trim() || !/^\S+@\S+\.\S+$/.test(f.email.value)) { msg.style.color = 'var(--ora)'; msg.textContent = 'Completa nombre, centro y un correo válido.'; return; }
 if (!f.consentimiento.checked) { msg.style.color = 'var(--ora)'; msg.textContent = 'Marca la casilla de protección de datos para enviar la solicitud.'; return; }
 btn.disabled = true; msg.style.color = 'var(--muted)'; msg.textContent = 'Enviando…';
-const d = Object.fromEntries(new FormData(f));
+const d = Object.fromEntries(new FormData(f)); d.consentimiento = true;
 try {
-const r = await fetch(DEMO_ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-body: JSON.stringify({ Nombre: d.nombre, 'Centro o entidad': d.centro, Correo: d.email, 'Teléfono': d.telefono || '—', 'Tipo de organización': d.tipo, Consentimiento: 'Sí', _subject: 'Nueva solicitud de demo: ' + d.centro, _replyto: d.email, _template: 'table', _captcha: 'false' }) });
+const r = await fetch(DEMO_ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(d) });
 const j = await r.json().catch(() => ({}));
-if (!r.ok || String(j.success) === 'false') throw 0;
+if (!r.ok || !j.ok) throw 0;
 msg.style.color = 'var(--teal-2)'; msg.textContent = 'Solicitud enviada. Te escribimos en un día laborable para fijar la demo.'; f.reset();
 } catch { msg.style.color = 'var(--ora)'; msg.textContent = 'No se pudo enviar. Escríbenos a soporte@gestionnarte.com.'; }
 btn.disabled = false;

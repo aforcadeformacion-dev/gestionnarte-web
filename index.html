@@ -648,7 +648,7 @@ el.className = 'panel'; el.style.setProperty('--c', col);
 const vis = img
 ? `<div class="vis"><div class="ghost"></div><div class="shot"><img src="img/${img}.webp" alt="Pantalla de ${title} en Gestionnarte" width="1562" height="784"></div></div>`
 : `<div class="vis"><div class="card" style="border-color:${col}66"><span class="lbl">Gestión de proyectos</span><h3 style="font-size:36px;margin-top:10px">Integrales tiene su propia sección.</h3><p>Proyecto, coordinación, visor de auditoría y documentación por lotes.</p><a class="btn btn-p jump mag" href="#proyectos" style="background:${col};color:#1A1206">Ir a gestión de proyectos</a></div></div>`;
-el.innerHTML = `<div class="bg"></div><div style="position:relative"><div class="code">${code}</div><span class="area">${area}</span><h3>${title}</h3><p>${desc}</p><div class="feat">${feat.map(f => `<span>${f}</span>`).join('')}</div></div>${vis}`;
+el.innerHTML = `<div class="bg"></div><div style="position:relative"><span class="area">${area}</span><h3>${title}</h3><p>${desc}</p><div class="feat">${feat.map(f => `<span>${f}</span>`).join('')}</div></div>${vis}`;
 track.appendChild(el);
 const seg = document.createElement('i'); seg.style.setProperty('--c', col); seg.innerHTML = '<b></b>'; mbar.appendChild(seg);
 });
@@ -980,7 +980,7 @@ onUpdate: s => { const f = s.progress * (panels.length - 1); segs.forEach((b, i)
 panels.forEach(p => {
 const shot = $('.shot', p) || $('.card', p);
 gsap.fromTo(shot, { rotateY: -32, rotateX: 10, x: 120, scale: .9 }, { rotateY: -8, rotateX: 4, x: 0, scale: 1, ease: 'none', scrollTrigger: { trigger: p, containerAnimation: h, start: 'left right', end: 'center center', scrub: true } });
-gsap.from($('.code', p), { xPercent: 40, opacity: 0, ease: 'none', scrollTrigger: { trigger: p, containerAnimation: h, start: 'left 90%', end: 'left 30%', scrub: true } });
+$('.code', p) && gsap.from($('.code', p), { xPercent: 40, opacity: 0, ease: 'none', scrollTrigger: { trigger: p, containerAnimation: h, start: 'left 90%', end: 'left 30%', scrub: true } });
 });
 const calST = ScrollTrigger.create({ trigger: '#calendario', start: 'top top', end: '+=260%', pin: true, scrub: true,
 onUpdate: s => setCal(Math.min(VIEWS.length - 1, Math.floor(s.progress * VIEWS.length))) });

@@ -802,7 +802,7 @@ const bl = fs * 1.02, x0 = (W - o.measureText(word).width) / 2, x = W - x0;
 o.fillStyle = '#ffffff'; o.fillText(word, x0, bl);
 o.fillStyle = '#ff0000'; o.fillText('gestionn', x0, bl);
 o.fillStyle = '#ffffff'; o.fillText('gestion', x0, bl);
-const top = H * (W < 700 ? .24 : .3) - bl * .62, gap = W < 600 ? 1.8 : W < 1100 ? 2.4 : 2.8;
+const top = H * (W < 700 ? .24 : .3) - bl * .62, gap = W < 600 ? 1.5 : W < 1100 ? 1.8 : 2;
 const d = o.getImageData(0, 0, off.width, off.height).data, old = WM.P || [], P = [];
 for (let yy = 0; yy < off.height; yy += gap) for (let xx = 0; xx < off.width; xx += gap) {
 const xi = Math.round(xx), yi = Math.round(yy), pi = (yi * off.width + xi) * 4; if (d[pi + 3] < 150) continue; const isN = d[pi + 1] < 120;
@@ -838,23 +838,29 @@ cx.fillStyle = q.teal || k > .25 ? `rgba(94,234,212,${al})` : `rgba(244,248,251,
 cx.beginPath(); cx.arc(x, y, q.sz * (1 + k * .8), 0, 6.283); cx.fill();
 }
 // palabra de puntos
-const R = 110, sz = gap * .86;
+const R = 110, sz = gap * .86, aBase = 1 - sc * .9;
+const W0 = [], T0 = [], H0 = [];
 for (const p of P) {
-const k = ez((WM.intro - p.d) / .6), drift = (1 - k) * 16;
-let gx = p.cx + (p.tx - p.cx) * k + Math.sin(t * .7 + p.ph) * drift;
-let gy = p.cy + (p.ty - p.cy) * k + Math.cos(t * .6 + p.ph) * drift;
-gx += p.ex * sc * W * 1.1; gy += p.ey * sc * H * 1.1 - sc * 140;
+const k = ez((WM.intro - p.d) / .6);
+let gx, gy;
+if (k < 1) { const drift = (1 - k) * 16; gx = p.cx + (p.tx - p.cx) * k + Math.sin(t * .7 + p.ph) * drift; gy = p.cy + (p.ty - p.cy) * k + Math.cos(t * .6 + p.ph) * drift; }
+else { gx = p.tx; gy = p.ty; }
+if (sc > 0) { gx += p.ex * sc * W * 1.1; gy += p.ey * sc * H * 1.1 - sc * 140; }
 for (const r of WM.rings) { const rad = (t - r.t) * 650, dr = Math.hypot(p.tx - r.x, p.ty - r.y), w = Math.max(0, 1 - Math.abs(dr - rad) / 36) * (1 - (t - r.t) / 1.4); if (w > 0) { gx += (p.tx - r.x) / (dr || 1) * w * 16; gy += (p.ty - r.y) / (dr || 1) * w * 16; } }
 const dx = p.x - mx, dy = p.y - my, dist = dx * dx + dy * dy; let hot = 0;
 if (dist < R * R) { const dd = Math.sqrt(dist) || 1; hot = 1 - dd / R; const f = hot * 3; p.vx += dx / dd * f; p.vy += dy / dd * f; }
 p.vx += (gx - p.x) * .07; p.vy += (gy - p.y) * .07; p.vx *= .78; p.vy *= .78; p.x += p.vx; p.y += p.vy;
-const c1 = p.n ? [13, 170, 156] : hot > .2 ? [94, 234, 212] : [244, 248, 251], c0 = p.c0;
-const r = c0[0] + (c1[0] - c0[0]) * k, g = c0[1] + (c1[1] - c0[1]) * k, b = c0[2] + (c1[2] - c0[2]) * k;
-const al = (.5 + .5 * k) * (1 - sc * .9);
-cx.fillStyle = `rgba(${r | 0},${g | 0},${b | 0},${al})`;
-const s = sz * (1 + (1 - k) * .4);
-cx.fillRect(p.x - s / 2, p.y - s / 2, s, s);
+if (k >= 1) { (p.n ? T0 : hot > .2 ? H0 : W0).push(p); continue; }
+const c1 = p.n ? [13, 170, 156] : [244, 248, 251], c0 = p.c0;
+cx.fillStyle = `rgba(${c0[0] + (c1[0] - c0[0]) * k | 0},${c0[1] + (c1[1] - c0[1]) * k | 0},${c0[2] + (c1[2] - c0[2]) * k | 0},${(.5 + .5 * k) * aBase})`;
+const s = sz * (1 + (1 - k) * .4); cx.fillRect(p.x - s / 2, p.y - s / 2, s, s);
 }
+const h = sz / 2;
+cx.globalAlpha = aBase;
+cx.fillStyle = '#F4F8FB'; for (const p of W0) cx.fillRect(p.x - h, p.y - h, sz, sz);
+cx.fillStyle = '#0DAA9C'; for (const p of T0) cx.fillRect(p.x - h, p.y - h, sz, sz);
+cx.fillStyle = '#5EEAD4'; for (const p of H0) cx.fillRect(p.x - h, p.y - h, sz, sz);
+cx.globalAlpha = 1;
 }
 {
 let wmStarted = false;

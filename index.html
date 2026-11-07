@@ -66,10 +66,14 @@ p{margin:0}
 @media (max-width:980px){.nav ul{display:none}}
 /* hero */
 .hero{position:relative;height:100vh;min-height:640px;overflow:hidden;background:radial-gradient(ellipse at 50% 40%,#0A2338 0%,var(--ink) 70%)}
-.hero canvas{position:absolute;inset:0;width:100%;height:100%}
-.hbg{position:absolute;inset:-6%;background:url(img/hero-fondo.webp) center/cover no-repeat;opacity:.7;will-change:transform;animation:breathe 22s ease-in-out infinite alternate}
+.hero .wm{position:absolute;left:0;right:0;top:16%;display:flex;justify-content:center;font-size:clamp(64px,15.5vw,260px);font-weight:900;letter-spacing:-.065em;line-height:1;perspective:900px;user-select:none;filter:drop-shadow(0 24px 60px rgba(3,13,25,.6))}
+.hero .wm span{display:inline-block;padding:0 .012em .1em;background:url(img/wm-relleno.webp) 0 0/320% auto,linear-gradient(180deg,#fff,#A3E8DF);background-blend-mode:screen;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;animation:flow 16s linear infinite;animation-delay:calc(var(--i) * -.6s);will-change:transform;transform-origin:50% 80%}
+.hero .wm span.n{background:linear-gradient(180deg,#8FF5E6,#0DAA9C);-webkit-background-clip:text;background-clip:text;animation:none;filter:drop-shadow(0 0 28px rgba(94,234,212,.55))}
+@keyframes flow{to{background-position:100% 50%,0 0}}
+.hero .wmline{position:absolute;left:50%;top:calc(16% + clamp(64px,15.5vw,260px) * 1.02);width:min(1100px,80vw);height:1px;transform:translateX(-50%) scaleX(0);background:linear-gradient(90deg,transparent,var(--teal-2),transparent);box-shadow:0 0 18px var(--teal-2)}
+.hbg{position:absolute;inset:-6%;background:url(img/hero-fondo.webp) center/cover no-repeat;opacity:.75;will-change:transform}
+.hbg video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .hbg::after{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 50% 45%,rgba(3,13,25,.55) 0%,rgba(3,13,25,.15) 55%,rgba(3,13,25,.85) 100%)}
-@keyframes breathe{from{transform:scale(1) rotate(0deg)}to{transform:scale(1.08) rotate(1.2deg)}}
 .hero .copy{position:absolute;left:0;right:0;top:61%;text-align:center;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
 .hero h1{font-size:clamp(30px,4.4vw,62px);font-weight:800;line-height:1;letter-spacing:-.045em}
 .hero h1 em{color:var(--teal-2)}
@@ -81,6 +85,7 @@ p{margin:0}
 .word{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.08em}
 .word>span{display:inline-block}
 @media (max-height:720px),(max-width:600px){.hint{display:none}}
+@media (max-width:700px){.hero .wm{top:20%}.hero .copy{top:40%}.hero .wmline{top:calc(20% + 15.5vw * 1.05)}}
 /* caos → orden */
 .chaos{position:relative;height:100vh;min-height:700px;overflow:hidden;background:var(--ink)}
 .chaos .obg{position:absolute;inset:0;background:url(img/caos-orden.webp) center 85%/cover no-repeat;opacity:.22}
@@ -99,12 +104,22 @@ p{margin:0}
 .show{position:relative;min-height:100vh;overflow:hidden;background:radial-gradient(ellipse at 50% 70%,#0A2338 0%,var(--ink) 65%);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:110px 20px 40px;text-align:center}
 .show .h2{font-size:clamp(36px,5vw,74px)}
 .show .lead{max-width:60ch;margin:16px auto 0;color:var(--muted)}
-.show .lap{position:relative;width:min(1180px,96vw);margin-top:-2vh;will-change:transform}
+.show>.kicker,.show>.h2,.show>.lead{position:relative;z-index:2}
+.show .lap{position:relative;z-index:1;width:min(1180px,96vw);margin-top:2vh;will-change:transform}
 .show .lap img{width:100%;height:auto;display:block;-webkit-mask-image:radial-gradient(ellipse 72% 78% at 50% 50%,#000 60%,transparent 100%);mask-image:radial-gradient(ellipse 72% 78% at 50% 50%,#000 60%,transparent 100%)}
 .show .tag{position:absolute;padding:10px 14px;border-radius:12px;background:rgba(10,33,54,.85);border:1px solid rgba(94,234,212,.45);backdrop-filter:blur(8px);font-size:14px;color:#fff;text-align:left;box-shadow:0 14px 40px rgba(0,0,0,.4);white-space:nowrap}
 .show .tag small{display:block;color:var(--muted);font-size:12px}
 .show .tag i{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--c,var(--teal-2));box-shadow:0 0 10px var(--c,var(--teal-2));margin-right:8px}
 @media (max-width:700px){.show .tag{display:none}}
+.secbg{position:absolute;inset:-8% 0;background-size:cover;background-repeat:no-repeat;pointer-events:none;-webkit-mask-image:linear-gradient(transparent,#000 18%,#000 82%,transparent);mask-image:linear-gradient(transparent,#000 18%,#000 82%,transparent)}
+.cal>.wrap,.ia>.wrap,.final>.wrap{position:relative}
+.wimg{position:relative;margin:-32px -28px 4px;height:190px;overflow:hidden;transform:translateZ(20px)}
+.wimg img{width:100%;height:100%;object-fit:cover;transform:scale(1.15);transition:transform 1.2s cubic-bezier(.2,.7,.2,1)}
+.wcard:hover .wimg img{transform:scale(1.02)}
+.wimg::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 40%,rgba(10,26,44,.95))}
+.wcard .wimg+.num{margin-top:-58px}
+.sec .lock{position:absolute;right:-7%;top:-30px;width:min(440px,34vw);opacity:.85;pointer-events:none;-webkit-mask-image:radial-gradient(closest-side,#000 55%,transparent);mask-image:radial-gradient(closest-side,#000 55%,transparent)}
+@media (max-width:900px){.sec .lock{opacity:.35;width:80vw;right:-20%}.secbg{opacity:.18!important}}
 /* módulos horizontal */
 .mods{position:relative;background:var(--deep);overflow:hidden}
 .mods .intro{padding-block:120px 40px}
@@ -320,8 +335,9 @@ footer b{color:#fff}
 <div class="prog" id="prog"></div>
 </nav>
 <header class="hero" id="inicio">
-<div class="hbg" id="hbg" aria-hidden="true"></div>
-<canvas id="fx" aria-hidden="true"></canvas>
+<div class="hbg" id="hbg" aria-hidden="true"><video id="hvid" autoplay muted loop playsinline preload="auto" poster="img/hero-fondo.webp"><source src="img/portada.mp4" type="video/mp4"></video></div>
+<div class="wm" id="wm" role="img" aria-label="gestionnarte"><span>g</span><span>e</span><span>s</span><span>t</span><span>i</span><span>o</span><span>n</span><span class="n">n</span><span>a</span><span>r</span><span>t</span><span>e</span></div>
+<div class="wmline" id="wmline" aria-hidden="true"></div>
 <div class="copy" id="herocopy">
 <h1 class="split">Toda tu formación. Una sola <em>plataforma.</em></h1>
 <p>Del primer WhatsApp al diploma, y del primer participante a la justificación del programa. Para centros de formación, entidades del tercer sector y academias de toda España.</p>
@@ -377,6 +393,7 @@ footer b{color:#fff}
 </div>
 </section>
 <section class="cal" id="calendario">
+<div class="secbg" data-par style="background-image:url(img/fondo-calendario.webp);background-position:right center;opacity:.32"></div>
 <div class="wrap grid2">
 <div>
 <span class="kicker">Calendario y aulas</span>
@@ -400,6 +417,7 @@ footer b{color:#fff}
 </div>
 </section>
 <section class="proj" id="proyectos">
+<div class="secbg" data-par style="background-image:url(img/fondo-proyectos.webp);background-size:72% auto;background-position:right 30%;opacity:.28"></div>
 <div class="orb" style="width:900px;height:900px;left:-200px;top:0;background:radial-gradient(circle,rgba(194,65,12,.3),transparent 62%)"></div>
 <div class="orb" style="width:700px;height:700px;right:-200px;bottom:0;background:radial-gradient(circle,rgba(124,58,237,.22),transparent 62%)"></div>
 <div class="wrap" style="position:relative">
@@ -503,6 +521,7 @@ footer b{color:#fff}
 </div>
 </section>
 <section class="ia" id="ia">
+<div class="secbg" data-par style="background-image:url(img/fondo-ia.webp);background-size:auto 70%;background-position:right 8%;opacity:.4;-webkit-mask-image:linear-gradient(90deg,transparent 30%,#000 70%);mask-image:linear-gradient(90deg,transparent 30%,#000 70%)"></div>
 <div class="bigia" aria-hidden="true">IA</div>
 <div class="bigia fill" id="bigia" aria-hidden="true">IA</div>
 <div class="wrap" style="position:relative">
@@ -534,14 +553,15 @@ footer b{color:#fff}
 <h2 class="h2">Para quien vive de formar,<br>acompañar <em style="color:var(--teal-2)">e insertar.</em></h2>
 <p class="lead">Diseñada junto a un centro de formación real que la usa a diario. Tres tipos de organización y una sola herramienta, en toda España.</p>
 <div class="wgrid">
-<article class="wcard" style="--wc:#5EEAD4"><div class="num">01</div><h3>Centros de formación profesional</h3><p>Certificados de profesionalidad, especialidades, teleformación y formación para el empleo.</p><ul><li>Acreditación por sede y aula</li><li>Anexos oficiales generados solos</li><li>Actas por módulo y prácticas</li><li>Expedientes listos para justificar</li></ul></article>
-<article class="wcard" style="--wc:#FDBA74"><div class="num">02</div><h3>Entidades del tercer sector</h3><p>Programas de empleo e inserción sociolaboral cofinanciados, con itinerarios y acompañamiento.</p><ul><li>Proyectos con equipo y canal propios</li><li>Contratos, cómputo e incentivos</li><li>Coordinación de varias sedes</li><li>Auditoría documental previa</li></ul></article>
-<article class="wcard" style="--wc:#F9A8D4"><div class="num">03</div><h3>Academias privadas</h3><p>Formación propia, idiomas, oposiciones o formación técnica de pago.</p><ul><li>Captación por WhatsApp</li><li>Difusión de la oferta</li><li>Matrícula, precios y cobros</li><li>Certificados propios</li></ul></article>
+<article class="wcard" style="--wc:#5EEAD4"><div class="wimg"><img src="img/quien-centros.webp" alt="" loading="lazy" width="800" height="597"></div><div class="num">01</div><h3>Centros de formación profesional</h3><p>Certificados de profesionalidad, especialidades, teleformación y formación para el empleo.</p><ul><li>Acreditación por sede y aula</li><li>Anexos oficiales generados solos</li><li>Actas por módulo y prácticas</li><li>Expedientes listos para justificar</li></ul></article>
+<article class="wcard" style="--wc:#FDBA74"><div class="wimg"><img src="img/quien-tercer-sector.webp" alt="" loading="lazy" width="800" height="597"></div><div class="num">02</div><h3>Entidades del tercer sector</h3><p>Programas de empleo e inserción sociolaboral cofinanciados, con itinerarios y acompañamiento.</p><ul><li>Proyectos con equipo y canal propios</li><li>Contratos, cómputo e incentivos</li><li>Coordinación de varias sedes</li><li>Auditoría documental previa</li></ul></article>
+<article class="wcard" style="--wc:#F9A8D4"><div class="wimg"><img src="img/quien-academias.webp" alt="" loading="lazy" width="800" height="597"></div><div class="num">03</div><h3>Academias privadas</h3><p>Formación propia, idiomas, oposiciones o formación técnica de pago.</p><ul><li>Captación por WhatsApp</li><li>Difusión de la oferta</li><li>Matrícula, precios y cobros</li><li>Certificados propios</li></ul></article>
 </div>
 </div>
 </section>
 <section class="sec" id="seguridad">
-<div class="wrap">
+<img class="lock" id="lock" src="img/seguridad.webp" alt="" aria-hidden="true" loading="lazy" width="1000" height="747">
+<div class="wrap" style="position:relative">
 <span class="kicker">Seguridad y protección de datos</span>
 <h2 class="h2">Datos protegidos <em style="color:var(--teal-2)">por diseño.</em></h2>
 <div class="sgrid">
@@ -566,6 +586,7 @@ footer b{color:#fff}
 </div>
 </section>
 <section class="final" id="demo">
+<div class="secbg" data-par style="background-image:url(img/fondo-demo.webp);background-position:right bottom;opacity:.6"></div>
 <div class="blob" id="blob"></div>
 <div class="wrap" style="position:relative">
 <span class="kicker">Siguiente paso</span>
@@ -762,72 +783,10 @@ await wait(k === 'tr' ? 700 : 1100);
 await wait(4200);
 }
 }
-/* ---------- partículas de la portada ---------- */
-const cv = $('#fx'), cx = cv.getContext('2d');
-let W, H, DPR, P = [], assemble = 0, scatter = 0, mouse = { x: -9999, y: -9999 }, t0 = performance.now();
-const AREA = ['#F9A8D4','#5EEAD4','#93C5FD','#C4B5FD','#FDBA74','#D6D3D1'];
-const hex = h => [parseInt(h.slice(1, 3), 16), parseInt(h.slice(3, 5), 16), parseInt(h.slice(5, 7), 16)];
-function build() {
-DPR = Math.min(devicePixelRatio || 1, 2); W = cv.clientWidth; H = cv.clientHeight;
-cv.width = W * DPR; cv.height = H * DPR; cx.setTransform(DPR, 0, 0, DPR, 0, 0);
-const off = document.createElement('canvas'), oc = off.getContext('2d');
-const fw = Math.min(W * .88, 1180); let fs = 200;
-oc.font = `800 ${fs}px "Inter Tight", sans-serif`;
-fs = fs * fw / (oc.measureText('gestionnarte').width * .955);
-off.width = Math.ceil(fw + 40); off.height = Math.ceil(fs * 1.25);
-oc.font = `800 ${fs}px "Inter Tight", sans-serif`; oc.textBaseline = 'alphabetic'; oc.fillStyle = '#fff';
-const ls = -0.045 * fs, base = fs * .95; let x = 10, nStart = 0, nEnd = 0;
-'gestionnarte'.split('').forEach((ch, i) => { if (i === 7) nStart = x; oc.fillText(ch, x, base); x += oc.measureText(ch).width + ls; if (i === 7) nEnd = x - ls; });
-const realW = x - ls - 10, ox = (W - realW) / 2 - 10, oy = H * .34 - base * .6;
-const data = oc.getImageData(0, 0, off.width, off.height).data;
-const gap = W < 600 ? 3 : W < 1100 ? 4 : 5, pts = [];
-for (let y = 0; y < off.height; y += gap) for (let xx = 0; xx < off.width; xx += gap) if (data[(y * off.width + xx) * 4 + 3] > 140) pts.push([xx, y]);
-const old = P;
-P = pts.map(([px, py], i) => {
-const o = old[i], teal = px >= nStart && px <= nEnd;
-const a = Math.random() * Math.PI * 2, r = Math.max(W, H) * (.25 + Math.random() * .55);
-return {
-tx: ox + px, ty: oy + py,
-cx: W / 2 + Math.cos(a) * r, cy: H / 2 + Math.sin(a) * r * .6,
-x: o ? o.x : W / 2 + (Math.random() - .5) * W * 1.3, y: o ? o.y : H / 2 + (Math.random() - .5) * H * 1.3,
-vx: 0, vy: 0, d: Math.random() * .4 + (px / off.width) * .45,
-c0: hex(AREA[i % AREA.length]), c1: teal ? hex('#0DAA9C') : [244, 248, 251],
-ph: Math.random() * 6.28, s: Math.random() * .8 + .9, ex: Math.random() - .5, ey: Math.random() - .5
-};
-});
-}
-const ease = t => t < 0 ? 0 : t > 1 ? 1 : 1 - Math.pow(1 - t, 3);
-let heroVisible = true;
-function frame(now) {
-requestAnimationFrame(frame);
-if (!heroVisible) return;
-const tt = (now - t0) / 1000;
-cx.clearRect(0, 0, W, H);
-const sz = W < 600 ? 1.7 : 2.4, R = 110;
-for (const p of P) {
-const k = ease((assemble - p.d) / .55), drift = (1 - k) * 18;
-let gx = p.cx + (p.tx - p.cx) * k + Math.sin(tt * .7 + p.ph) * drift;
-let gy = p.cy + (p.ty - p.cy) * k + Math.cos(tt * .6 + p.ph) * drift;
-gx += p.ex * scatter * W * 1.1; gy += p.ey * scatter * H * 1.1 - scatter * 120;
-const dx = p.x - mouse.x, dy = p.y - mouse.y, dist = dx * dx + dy * dy;
-if (dist < R * R) { const dd = Math.sqrt(dist) || 1, f = (1 - dd / R) * 3.2; p.vx += dx / dd * f; p.vy += dy / dd * f; }
-p.vx += (gx - p.x) * .06; p.vy += (gy - p.y) * .06; p.vx *= .8; p.vy *= .8; p.x += p.vx; p.y += p.vy;
-const c0 = p.c0, c1 = p.c1;
-const r = c0[0] + (c1[0] - c0[0]) * k, g = c0[1] + (c1[1] - c0[1]) * k, b = c0[2] + (c1[2] - c0[2]) * k;
-cx.fillStyle = `rgba(${r | 0},${g | 0},${b | 0},${(.55 + .45 * k) * (1 - scatter * .9)})`;
-const s = sz * p.s * (1 - k * .25);
-cx.fillRect(p.x - s / 2, p.y - s / 2, s, s);
-}
-}
+/* ---------- marca de la portada ---------- */
 const hero = $('.hero');
-hero.addEventListener('pointermove', e => { const r = cv.getBoundingClientRect(); mouse.x = e.clientX - r.left; mouse.y = e.clientY - r.top; });
-hero.addEventListener('pointerleave', () => { mouse.x = mouse.y = -9999; });
-(document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(() => {
-build(); requestAnimationFrame(frame);
-if (reduce || !hasG) { assemble = 2; return; }
-gsap.to({ v: 0 }, { v: 2, duration: 3, ease: 'power2.inOut', delay: .2, onUpdate() { assemble = this.targets()[0].v; } });
-});
-let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { build(); drawRoad(); if (hasG) ScrollTrigger.refresh(); }, 200); });
+const wmL = $$('#wm span'); wmL.forEach((l, i) => l.style.setProperty('--i', i));
+let rt; addEventListener('resize', () => { clearTimeout(rt); rt = setTimeout(() => { drawRoad(); if (hasG) ScrollTrigger.refresh(); }, 200); });
 /* ---------- titulares partidos en palabras ---------- */
 function splitWords(el) {
 const walk = n => [...n.childNodes].forEach(ch => {
@@ -900,8 +859,19 @@ $$('a[href^="#"]').forEach(a => a.addEventListener('click', e => { const t = $(a
 $$('.split, .split2, .h2').forEach(splitWords);
 gsap.from('.hero .word > span', { yPercent: 110, duration: 1.1, ease: 'expo.out', stagger: .05, delay: 1.6 });
 gsap.from('.hero p, .hero .ctas', { y: 24, opacity: 0, duration: 1, ease: 'power3.out', stagger: .12, delay: 2.1 });
-ScrollTrigger.create({ trigger: hero, start: 'top top', end: 'bottom top', scrub: true,
-onUpdate: s => { scatter = s.progress; }, onToggle: s => { heroVisible = s.isActive || scrollY < innerHeight; } });
+if (!reduce) {
+gsap.from(wmL, { yPercent: 115, rotateX: -95, opacity: 0, filter: 'blur(14px)', duration: 1.5, ease: 'expo.out', stagger: { each: .055, from: 'center' }, delay: .25 });
+gsap.to('#wmline', { scaleX: 1, duration: 1.6, ease: 'expo.inOut', delay: .9 });
+gsap.fromTo('.wm .n', { filter: 'drop-shadow(0 0 0px rgba(94,234,212,0))' }, { filter: 'drop-shadow(0 0 34px rgba(94,234,212,.75))', duration: 1.6, ease: 'sine.inOut', delay: 1.8, repeat: -1, yoyo: true });
+const wmTl = gsap.timeline({ scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: .6 } });
+wmL.forEach((l, i) => wmTl.to(l, { yPercent: -60 - ((i * 37) % 7) * 22, rotateX: 40, opacity: 0, ease: 'none' }, 0));
+wmTl.to('#wmline', { scaleX: 0, opacity: 0, ease: 'none' }, 0);
+if (fine) {
+const qs = wmL.map(l => ({ y: gsap.quickTo(l, 'y', { duration: .6, ease: 'power3' }), r: gsap.quickTo(l, 'rotateY', { duration: .8, ease: 'power3' }) }));
+hero.addEventListener('pointermove', e => { wmL.forEach((l, i) => { const r = l.getBoundingClientRect(), cx = r.left + r.width / 2, d = (e.clientX - cx) / innerWidth, near = Math.max(0, 1 - Math.abs(d) * 7) * Math.max(0, 1 - Math.abs(e.clientY - (r.top + r.height / 2)) / 420); qs[i].y(-near * 34); qs[i].r(d * -40 * near); }); });
+hero.addEventListener('pointerleave', () => qs.forEach(q => { q.y(0); q.r(0); }));
+}
+}
 gsap.to('#herocopy, .hint', { yPercent: -40, opacity: 0, ease: 'none', scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom 30%', scrub: true } });
 $$('section .h2').forEach(h => gsap.from($$('.word > span', h), { yPercent: 110, duration: 1, ease: 'expo.out', stagger: .04, scrollTrigger: { trigger: h, start: 'top 88%' } }));
 if (fine && !reduce) { const qx = gsap.quickTo('#hbg', 'x', { duration: 1.6, ease: 'power3' }), qy = gsap.quickTo('#hbg', 'y', { duration: 1.6, ease: 'power3' });
@@ -910,6 +880,8 @@ gsap.to('#hbg', { yPercent: 18, opacity: .2, ease: 'none', scrollTrigger: { trig
 gsap.fromTo('#lap', { y: 120, scale: .82, rotateX: 18, opacity: .3, transformPerspective: 1400 }, { y: 0, scale: 1, rotateX: 0, opacity: 1, ease: 'none', scrollTrigger: { trigger: '#escaparate', start: 'top bottom', end: 'center center', scrub: 1 } });
 $$('#lap .tag').forEach((t, i) => gsap.from(t, { y: 30, opacity: 0, scale: .9, duration: .8, ease: 'back.out(1.6)', delay: i * .15, scrollTrigger: { trigger: '#lap', start: 'top 45%' } }));
 gsap.to('#lap', { yPercent: -6, ease: 'none', scrollTrigger: { trigger: '#escaparate', start: 'center center', end: 'bottom top', scrub: true } });
+$$('[data-par]').forEach(b => gsap.fromTo(b, { yPercent: -6 }, { yPercent: 6, ease: 'none', scrollTrigger: { trigger: b.parentElement, start: 'top bottom', end: 'bottom top', scrub: true } }));
+gsap.fromTo('#lock', { y: 80, rotate: -8, scale: .85, opacity: 0 }, { y: 0, rotate: 0, scale: 1, opacity: .7, ease: 'none', scrollTrigger: { trigger: '#seguridad', start: 'top bottom', end: 'center center', scrub: 1 } });
 const mm = gsap.matchMedia();
 mm.add('(min-width: 901px)', () => {
 const tools = $$('.tool');

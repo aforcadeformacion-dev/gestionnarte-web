@@ -803,7 +803,18 @@ o.fillStyle = '#ffffff'; o.fillText(word, x0, bl);
 o.fillStyle = '#ff0000'; o.fillText('gestionn', x0, bl);
 o.fillStyle = '#ffffff'; o.fillText('gestion', x0, bl);
 const top = H * (W < 700 ? .24 : .3) - bl * .62, gap = W < 600 ? 1.5 : W < 1100 ? 1.8 : 2;
-const d = o.getImageData(0, 0, off.width, off.height).data, old = WM.P || [], P = [];
+// la n verde va en espejo, como en el logo aprobado
+const img = o.getImageData(0, 0, off.width, off.height), d = img.data, ow = off.width, oh = off.height;
+const ra = Math.max(0, Math.floor(x0 + o.measureText('gestion').width - fs * .08)), rb = Math.min(ow - 1, Math.ceil(x0 + o.measureText('gestionn').width + fs * .08));
+let nx0 = ow, nx1 = -1;
+for (let yy = 0; yy < oh; yy++) for (let xx = ra; xx <= rb; xx++) { const k = (yy * ow + xx) * 4; if (d[k + 3] >= 150 && d[k + 1] < 120) { if (xx < nx0) nx0 = xx; if (xx > nx1) nx1 = xx; } }
+if (nx1 > nx0) {
+const red = [];
+for (let yy = 0; yy < oh; yy++) for (let xx = nx0; xx <= nx1; xx++) { const k = (yy * ow + xx) * 4; if (d[k + 3] > 0 && d[k] > d[k + 1] + 60) { red.push(yy, xx, d[k], d[k + 1], d[k + 2], d[k + 3]); d[k + 3] = 0; } }
+for (let j = 0; j < red.length; j += 6) { const k = (red[j] * ow + (nx0 + nx1 - red[j + 1])) * 4; d[k] = red[j + 2]; d[k + 1] = red[j + 3]; d[k + 2] = red[j + 4]; d[k + 3] = red[j + 5]; }
+o.putImageData(img, 0, 0);
+}
+const old = WM.P || [], P = [];
 for (let yy = 0; yy < off.height; yy += gap) for (let xx = 0; xx < off.width; xx += gap) {
 const xi = Math.round(xx), yi = Math.round(yy), pi = (yi * off.width + xi) * 4; if (d[pi + 3] < 150) continue; const isN = d[pi + 1] < 120;
 const i = P.length, q = old[i], a = Math.random() * 6.283, r = Math.max(W, H) * (.22 + Math.random() * .5);
